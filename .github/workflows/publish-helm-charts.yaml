@@ -10,30 +10,35 @@ jobs:
   build-and-publish:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repo
+      - name: 🧾 Checkout Repo
         uses: actions/checkout@v3
 
-      - name: Set up Helm
+      - name: 🧰 Set up Helm
         uses: azure/setup-helm@v3
         with:
           version: v3.13.0
 
-      - name: Package Helm Charts
+      - name: 🧼 Clean Old Docs
+        run: |
+          mkdir -p docs
+          rm -f docs/*.tgz
+          rm -f docs/index.yaml
+
+      - name: 📦 Package Charts
         run: |
           cd charts
-          rm -f *.tgz
           helm package dashy
           helm package media-stack
+          mv *.tgz ../docs/
 
-      - name: Regenerate Helm index
+      - name: 🗂️ Generate Helm Repo Index
         run: |
-          cd charts
-          helm repo index . --url https://jpcortesp.github.io/jp-helm-repos/charts
+          helm repo index docs --url https://jpcortesp.github.io/jp-helm-repos/docs
 
-      - name: Commit and push changes
+      - name: 🚀 Commit & Push Changes
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add charts/
-          git commit -m "Update packaged Helm charts and index" || echo "No changes to commit"
+          git add docs/
+          git commit -m "Auto-update Helm charts and index via GitHub Actions" || echo "No changes to commit"
           git push
