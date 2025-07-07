@@ -40,9 +40,12 @@ jobs:
         run: touch docs/.nojekyll
 
       - name: 🚀 Commit & Push Changes
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+          git remote set-url origin https://x-access-token:${GH_TOKEN}@github.com/JPCortesP/jp-helm-repos.git
           git add docs/
           git commit -m "Auto-update Helm charts and index via GitHub Actions" || echo "No changes to commit"
-          git push
+          git push origin main
