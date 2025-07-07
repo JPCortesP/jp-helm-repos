@@ -1,0 +1,28 @@
+{{- if eq .Values.storage.type "nfs" }}
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: dashy-nfs-pv
+spec:
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteMany
+  nfs:
+    server: {{ .Values.nfs.server }}
+    path: {{ .Values.nfs.path }}
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: dashy-nfs-pvc
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Gi
+  volumeName: dashy-nfs-pv
+{{- end }}

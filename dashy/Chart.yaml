@@ -1,0 +1,6 @@
+apiVersion: v2
+name: dashy
+description: Deploy Dashy with optional NFS or ConfigMap configuration, and Traefik ingress
+type: application
+version: 0.1.0
+appVersion: "latest"

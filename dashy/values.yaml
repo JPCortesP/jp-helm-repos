@@ -1,0 +1,22 @@
+storage:
+  type: nfs  # Options: 'nfs' or 'configmap'
+
+nfs:
+  server: 192.168.1.100
+  path: /exported/dashy
+  mountPath: /app/config
+
+configMap:
+  name: dashy-configmap
+  mountPath: /app/config
+
+service:
+  type: ClusterIP
+  port: 80
+
+ingress:
+  enabled: true
+  className: traefik
+  host: dashy.k.jpcortesp.place
+  path: /
+  tls: false

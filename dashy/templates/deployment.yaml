@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dashy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dashy
+  template:
+    metadata:
+      labels:
+        app: dashy
+    spec:
+      containers:
+        - name: dashy
+          image: lissy93/dashy:latest
+          ports:
+            - containerPort: 80
+          volumeMounts:
+            - name: dashy-config
+              mountPath: {{ if eq .Values.storage.type "nfs" }}{{ .Values.nfs.mountPath }}{{ else }}{{ .Values.configMap.mountPath }}{{ end }}
+      volumes:
+        {{- if eq .Values.storage.type "nfs" }}
+        - name: dashy-config
+          persistentVolumeClaim:
+            claimName: dashy-nfs-pvc
+        {{- else if eq .Values.storage.type "configmap" }}
+        - name: dashy-config
+          configMap:
+            name: {{ .Values.configMap.name }}
+        {{- end }}

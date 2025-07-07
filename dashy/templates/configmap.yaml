@@ -1,0 +1,10 @@
+{{- if eq .Values.storage.type "configmap" }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Values.configMap.name }}
+data:
+  config.yaml: |
+    appConfig:
+      title: "Dashy"
+{{- end }}
