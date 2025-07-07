@@ -9,6 +9,7 @@ on:
 jobs:
   build-and-publish:
     runs-on: ubuntu-latest
+
     steps:
       - name: 🧾 Checkout Repo
         uses: actions/checkout@v3
@@ -24,16 +25,19 @@ jobs:
           rm -f docs/*.tgz
           rm -f docs/index.yaml
 
-      - name: 📦 Package Charts
+      - name: 📦 Package Helm Charts
         run: |
           cd charts
           helm package dashy
           helm package media-stack
           mv *.tgz ../docs/
 
-      - name: 🗂️ Generate Helm Repo Index
+      - name: 🗂️ Generate Helm Repo Index in /docs
         run: |
-          helm repo index docs --url https://jpcortesp.github.io/jp-helm-repos/docs
+          helm repo index docs --url https://jpcortesp.github.io/jp-helm-repos
+
+      - name: 🚫 Disable Jekyll
+        run: touch docs/.nojekyll
 
       - name: 🚀 Commit & Push Changes
         run: |
