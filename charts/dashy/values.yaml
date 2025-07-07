@@ -2,8 +2,8 @@ storage:
   type: nfs  # Options: 'nfs' or 'configmap'
 
 nfs:
-  server: 192.168.1.100
-  path: /exported/dashy
+  server: 192.168.5.5
+  path: /volume1/docker/dashy
   mountPath: /app/config
 
 configMap:
