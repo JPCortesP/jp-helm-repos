@@ -4,8 +4,9 @@ kind: Ingress
 metadata:
   name: dashy
   annotations:
-    kubernetes.io/ingress.class: {{ .Values.ingress.className }}
+    cert-manager.io/cluster-issuer: {{ .Values.ingress.tlsprovider }}
 spec:
+  ingressClassName: {{ .Values.ingress.className }}
   rules:
     - host: {{ .Values.ingress.host }}
       http:
@@ -17,4 +18,8 @@ spec:
                 name: dashy
                 port:
                   number: {{ .Values.service.port }}
+  tls:
+    - hosts:
+        - {{ .Values.ingress.host }}
+      secretName: dashy-tls
 {{- end }}
