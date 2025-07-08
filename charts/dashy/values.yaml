@@ -4,11 +4,9 @@ storage:
 nfs:
   server: 192.168.5.5
   path: /volume1/docker/dashy
-  mountPath: /app/config
 
 configMap:
   name: dashy-configmap
-  mountPath: /app/config
 
 service:
   type: ClusterIP

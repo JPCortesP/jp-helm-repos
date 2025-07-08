@@ -19,7 +19,7 @@ spec:
             - containerPort: 8080
           volumeMounts:
             - name: dashy-config
-              mountPath: {{ if eq .Values.storage.type "nfs" }}{{ .Values.nfs.mountPath }}{{ else }}{{ .Values.configMap.mountPath }}{{ end }}
+              mountPath: /app/user-data/
       volumes:
         {{- if eq .Values.storage.type "nfs" }}
         - name: dashy-config
