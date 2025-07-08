@@ -18,3 +18,9 @@ ingress:
   host: dashy.k.jpcortesp.place
   path: /
   tlsprovider: letsencrypt-godaddy
+
+gateway:
+  enabled: true
+  hostname: "*.k.jpcortesp.place"         # Wildcard cert listener
+  routeHost: "dashy.k.jpcortesp.place"   # Dashy's actual subdomain
+  tlsSecret: wildcard-k-jpcortesp-place-tls
