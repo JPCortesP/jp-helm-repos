@@ -9,6 +9,8 @@ spec:
     storage: 1Gi
   accessModes:
     - ReadWriteMany
+  storageClassName: ""
+  persistentVolumeReclaimPolicy: Retain
   nfs:
     server: {{ .Values.nfs.server }}
     path: {{ .Values.nfs.path }}
@@ -25,4 +27,5 @@ spec:
     requests:
       storage: 1Gi
   volumeName: dashy-nfs-pv
+  storageClassName: ""
 {{- end }}
