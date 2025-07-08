@@ -16,7 +16,7 @@ spec:
         - name: dashy
           image: lissy93/dashy:latest
           ports:
-            - containerPort: 80
+            - containerPort: 8080
           volumeMounts:
             - name: dashy-config
               mountPath: {{ if eq .Values.storage.type "nfs" }}{{ .Values.nfs.mountPath }}{{ else }}{{ .Values.configMap.mountPath }}{{ end }}
