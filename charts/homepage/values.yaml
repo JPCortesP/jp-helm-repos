@@ -20,7 +20,7 @@ ingress:
   tlsprovider: letsencrypt-godaddy
 
 gateway:
-  enabled: true
+  enabled: false
   hostname: "*.k.jpcortesp.place"         # Wildcard cert listener
   routeHost: "homepage.k.jpcortesp.place"   # Homepage's actual subdomain
   tlsSecret: wildcard-k-jpcortesp-place-tls
