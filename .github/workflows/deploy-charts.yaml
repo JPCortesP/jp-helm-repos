@@ -1,49 +1,53 @@
-name: Deploy Helm Charts
+name: Deploy Helm Charts via GitHub Pages
 
 on:
   push:
-    branches:
-      - main
+    paths:
+      - 'charts/**'
+      - '.github/workflows/deploy-charts.yaml'
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-      # ✅ Checkout full history so we can access gh-pages
-      - name: Checkout code
+      - name: 🧾 Checkout Repo
         uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
 
-      # ✅ Set up Helm CLI
-      - name: Set up Helm
+      - name: 🧰 Set up Helm
         uses: azure/setup-helm@v3
-
-      # ✅ Pull existing index.yaml from gh-pages
-      - name: Clone gh-pages branch
+        with:
+          version: v3.13.0
+          
+      - name: 🧩 Install yq
         run: |
-          git fetch origin gh-pages
-          git worktree add gh-pages origin/gh-pages
-
-      # ✅ Package charts
-      - name: Package charts
+          sudo wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /usr/bin/yq
+          sudo chmod +x /usr/bin/yq
+      - name: 🕓 Set Date-Based appVersion & Package Charts
         run: |
-          mkdir -p packaged
-          helm package charts/* --destination packaged
-          ls -la packaged
+          rm -rf public
+          mkdir -p public
+          TODAY=$(date +%F)  # Format: YYYY-MM-DD
 
-      # ✅ Merge with existing index.yaml
-      - name: Generate Helm repo index
-        run: |
-          helm repo index packaged \
-            --url https://jpchart.jpcortesp.dev \
-            --merge gh-pages/index.yaml
+          for dir in charts/*/; do
+            chart_file="${dir}Chart.yaml"
+            if [ -f "$chart_file" ]; then
+              echo "Updating appVersion in $chart_file to $TODAY"
+              # Use yq to update appVersion in-place
+              yq eval ".appVersion = \"$TODAY\"" -i "$chart_file"
+              helm package "$dir" --destination public
+            fi
+          done
 
-      # ✅ Deploy to gh-pages
-      - name: Deploy to GitHub Pages
+          helm repo index public --url https://jpcortesp.github.io/jp-helm-repos
+
+      - name: 🚫 Add .nojekyll
+        run: touch public/.nojekyll
+
+      - name: 🚀 Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: packaged
+          publish_dir: ./public
           publish_branch: gh-pages
+          force_orphan: true
