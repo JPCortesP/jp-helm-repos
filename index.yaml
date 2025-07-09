@@ -1,0 +1,37 @@
+apiVersion: v1
+entries:
+  dashy:
+  - apiVersion: v2
+    appVersion: "2025-07-09"
+    created: "2025-07-09T19:26:03.519793137Z"
+    description: Deploy Dashy with optional NFS or ConfigMap configuration, and Traefik
+      ingress
+    digest: 55958bab31f38f7809cd2b9c95ec0518eb06363050966430bb961c2ff6ff7a22
+    name: dashy
+    type: application
+    urls:
+    - https://jpcortesp.github.io/jp-helm-repos/dashy-0.1.7.tgz
+    version: 0.1.7
+  homepage:
+  - apiVersion: v2
+    appVersion: "2025-07-09"
+    created: "2025-07-09T19:26:03.520303768Z"
+    description: A Helm chart for the Homepage dashboard
+    digest: 7ae6b953582b4f8c7f41fe4f2b3ade116a9f31e560c31bf6243fb3f614547ebd
+    name: homepage
+    type: application
+    urls:
+    - https://jpcortesp.github.io/jp-helm-repos/homepage-0.1.10.tgz
+    version: 0.1.10
+  media-stack:
+  - apiVersion: v2
+    appVersion: "2025-07-09"
+    created: "2025-07-09T19:26:03.520975363Z"
+    description: A Helm chart for Kubernetes, that deploys most used arr suite apps.
+    digest: 15240ebb6269ecd046395f2ed7cdb34f17b7416e10a299e1bcc6cadfe6a35b1a
+    name: media-stack
+    type: application
+    urls:
+    - https://jpcortesp.github.io/jp-helm-repos/media-stack-0.1.2.tgz
+    version: 0.1.2
+generated: "2025-07-09T19:26:03.519079553Z"
