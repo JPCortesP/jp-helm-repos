@@ -18,17 +18,18 @@ jobs:
         uses: azure/setup-helm@v3
         with:
           version: v3.13.0
-
-      - name: 📦 Package Helm Charts
+      - name: 📦 Package All Helm Charts
         run: |
           rm -rf public
           mkdir -p public
-          cd charts
-          helm package dashy
-          helm package media-stack
-          mv *.tgz ../public/
-          cd ..
+          for dir in charts/*/; do
+            if [ -f "$dir/Chart.yaml" ]; then
+              helm package "$dir" --destination public
+            fi
+          done
           helm repo index public --url https://jpcortesp.github.io/jp-helm-repos
+
+      
 
       - name: 🚫 Add .nojekyll
         run: touch public/.nojekyll
