@@ -1,0 +1,22 @@
+{{- if .Values.gateway.enabled }}
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: homepage-gateway
+  namespace: {{ .Release.Namespace }}
+spec:
+  gatewayClassName: traefik
+  listeners:
+    - name: https
+      protocol: HTTPS
+      port: 443
+      hostname: "{{ .Values.gateway.hostname }}"  # Should be *.k.jpcortesp.place
+      tls:
+        mode: Terminate
+        certificateRefs:
+          - name: "{{ .Values.gateway.tlsSecret }}"
+            kind: Secret
+      allowedRoutes:
+        namespaces:
+          from: All
+{{- end }}
