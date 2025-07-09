@@ -23,7 +23,7 @@ apps:
   qbittorrent:
     enabled: true
     image: linuxserver/qbittorrent
-    tag: 5.1.0
+    tag: latest
     webPort: 8080
     peerPort: 6881
     ingressHost: qbittorrent.k.jpcortesp.place
