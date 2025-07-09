@@ -50,7 +50,19 @@ jobs:
           done
 
           helm repo index public --url https://jpcortesp.github.io/jp-helm-repos
+          
+      - name: 📝 Commit Chart.yaml Updates
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
 
+          if git status --porcelain | grep 'charts/.*/Chart.yaml'; then
+            git add charts/*/Chart.yaml
+            git commit -m "🔖 Bump chart versions and set appVersion for ${{ github.sha }}"
+            git push
+          else
+            echo "✅ No Chart.yaml changes to commit."
+          fi
       - name: 🚫 Add .nojekyll
         run: touch public/.nojekyll
 
