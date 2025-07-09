@@ -18,24 +18,34 @@ jobs:
         uses: azure/setup-helm@v3
         with:
           version: v3.13.0
-          
+
       - name: 🧩 Install yq
         run: |
           sudo wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /usr/bin/yq
           sudo chmod +x /usr/bin/yq
-      - name: 🕓 Set Date-Based appVersion & Package Charts
-        run: |
-          rm -rf public
-          mkdir -p public
-          TODAY=$(date +%F)  # Format: YYYY-MM-DD
 
-          for dir in charts/*/; do
-            chart_file="${dir}Chart.yaml"
-            if [ -f "$chart_file" ]; then
-              echo "Updating appVersion in $chart_file to $TODAY"
-              # Use yq to update appVersion in-place
-              yq eval ".appVersion = \"$TODAY\"" -i "$chart_file"
-              helm package "$dir" --destination public
+      - name: 🧠 Identify Changed Charts
+        id: changed
+        run: |
+          echo "CHANGED_DIRS<<EOF" >> $GITHUB_OUTPUT
+          git diff --name-only ${{ github.sha }}^ ${{ github.sha }} | grep '^charts/' | cut -d/ -f2 | sort -u >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: 🔼 Bump Chart Versions & Package
+        run: |
+          TODAY=$(date +%F)
+          mkdir -p public
+          echo "${{ steps.changed.outputs.CHANGED_DIRS }}" | while read chart; do
+            chart_path="charts/$chart/Chart.yaml"
+            if [ -f "$chart_path" ]; then
+              current_version=$(yq '.version' "$chart_path")
+              base_version="${current_version%.*}"
+              patch="${current_version##*.}"
+              next_patch=$((patch + 1))
+              new_version="${base_version}.${next_patch}"
+              echo "📦 $chart: version $current_version → $new_version, appVersion → $TODAY"
+              yq eval ".version = \"$new_version\" | .appVersion = \"$TODAY\"" -i "$chart_path"
+              helm package "charts/$chart" --destination public
             fi
           done
 
