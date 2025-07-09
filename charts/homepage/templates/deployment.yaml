@@ -19,7 +19,7 @@ spec:
             - containerPort: 3000
           volumeMounts:
             - name: homepage-config
-              mountPath: /app
+              mountPath: /app/config
       volumes:
         {{- if eq .Values.storage.type "nfs" }}
         - name: homepage-config
