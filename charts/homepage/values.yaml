@@ -15,7 +15,7 @@ service:
 ingress:
   enabled: true
   className: traefik
-  host: dashy.k.jpcortesp.place
+  host: homepage.k.jpcortesp.place
   path: /
   tlsprovider: letsencrypt-godaddy
 
