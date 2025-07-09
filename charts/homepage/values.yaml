@@ -6,7 +6,7 @@ nfs:
   path: /volume1/docker/homepage
 
 configMap:
-  name: dashy-configmap
+  name: homepage-configmap
 
 service:
   type: ClusterIP
@@ -22,5 +22,5 @@ ingress:
 gateway:
   enabled: true
   hostname: "*.k.jpcortesp.place"         # Wildcard cert listener
-  routeHost: "dashy.k.jpcortesp.place"   # Dashy's actual subdomain
+  routeHost: "homepage.k.jpcortesp.place"   # Homepage's actual subdomain
   tlsSecret: wildcard-k-jpcortesp-place-tls
