@@ -1,75 +1,49 @@
-name: Deploy Helm Charts via GitHub Pages
+name: Deploy Helm Charts
 
 on:
   push:
-    paths:
-      - 'charts/**'
-      - '.github/workflows/deploy-charts.yaml'
+    branches:
+      - main
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: 🧾 Checkout Repo
+      # ✅ Checkout full history so we can access gh-pages
+      - name: Checkout code
         uses: actions/checkout@v3
-
-      - name: 🧰 Set up Helm
-        uses: azure/setup-helm@v3
         with:
-          version: v3.13.0
+          fetch-depth: 0
 
-      - name: 🧩 Install yq
+      # ✅ Set up Helm CLI
+      - name: Set up Helm
+        uses: azure/setup-helm@v3
+
+      # ✅ Pull existing index.yaml from gh-pages
+      - name: Clone gh-pages branch
         run: |
-          sudo wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /usr/bin/yq
-          sudo chmod +x /usr/bin/yq
+          git fetch origin gh-pages
+          git worktree add gh-pages origin/gh-pages
 
-      - name: 🧠 Identify Changed Charts
-        id: changed
+      # ✅ Package charts
+      - name: Package charts
         run: |
-          echo "CHANGED_DIRS<<EOF" >> $GITHUB_OUTPUT
-          git diff --name-only ${{ github.sha }}^ ${{ github.sha }} | grep '^charts/' | cut -d/ -f2 | sort -u >> $GITHUB_OUTPUT
-          echo "EOF" >> $GITHUB_OUTPUT
+          mkdir -p packaged
+          helm package charts/* --destination packaged
+          ls -la packaged
 
-      - name: 🔼 Bump Chart Versions & Package
+      # ✅ Merge with existing index.yaml
+      - name: Generate Helm repo index
         run: |
-          TODAY=$(date +%F)
-          mkdir -p public
-          echo "${{ steps.changed.outputs.CHANGED_DIRS }}" | while read chart; do
-            chart_path="charts/$chart/Chart.yaml"
-            if [ -f "$chart_path" ]; then
-              current_version=$(yq '.version' "$chart_path")
-              base_version="${current_version%.*}"
-              patch="${current_version##*.}"
-              next_patch=$((patch + 1))
-              new_version="${base_version}.${next_patch}"
-              echo "📦 $chart: version $current_version → $new_version, appVersion → $TODAY"
-              yq eval ".version = \"$new_version\" | .appVersion = \"$TODAY\"" -i "$chart_path"
-              helm package "charts/$chart" --destination public
-            fi
-          done
+          helm repo index packaged \
+            --url https://jpchart.jpcortesp.dev \
+            --merge gh-pages/index.yaml
 
-          helm repo index public --url https://jpcortesp.github.io/jp-helm-repos
-          
-      - name: 📝 Commit Chart.yaml Updates
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-
-          if git status --porcelain | grep 'charts/.*/Chart.yaml'; then
-            git add charts/*/Chart.yaml
-            git commit -m "🔖 Bump chart versions and set appVersion for ${{ github.sha }}"
-            git push
-          else
-            echo "✅ No Chart.yaml changes to commit."
-          fi
-      - name: 🚫 Add .nojekyll
-        run: touch public/.nojekyll
-
-      - name: 🚀 Deploy to GitHub Pages
+      # ✅ Deploy to gh-pages
+      - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./public
+          publish_dir: packaged
           publish_branch: gh-pages
-          force_orphan: true
