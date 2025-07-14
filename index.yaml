@@ -1,0 +1,48 @@
+apiVersion: v1
+entries:
+  dashy:
+  - apiVersion: v2
+    appVersion: "2025-07-14"
+    created: "2025-07-14T01:50:36.446703208Z"
+    description: Deploy Dashy with optional NFS or ConfigMap configuration, and Traefik
+      ingress
+    digest: bf647fa7383b8dbd6259a0208eede718ebf33c96cb783c21fe7df457488dd0f5
+    name: dashy
+    type: application
+    urls:
+    - https://jpcortesp.github.io/jp-helm-repos/dashy-0.1.7.tgz
+    version: 0.1.7
+  homepage:
+  - apiVersion: v2
+    appVersion: "2025-07-14"
+    created: "2025-07-14T01:50:36.447193908Z"
+    description: A Helm chart for the Homepage dashboard
+    digest: 2ac497456ca7793eff7d0fc6679fbbb8441fd92b7dbc1931e89caac8be3d95d6
+    name: homepage
+    type: application
+    urls:
+    - https://jpcortesp.github.io/jp-helm-repos/homepage-0.1.10.tgz
+    version: 0.1.10
+  media-stack:
+  - apiVersion: v2
+    appVersion: "2025-07-14"
+    created: "2025-07-14T01:50:36.447795405Z"
+    description: A Helm chart for Kubernetes, that deploys most used arr suite apps.
+    digest: c627e0499dfdef4b62af02596513164ac516ee13f9260b389bd366b0542c7521
+    name: media-stack
+    type: application
+    urls:
+    - https://jpcortesp.github.io/jp-helm-repos/media-stack-0.1.2.tgz
+    version: 0.1.2
+  uptime-kuma:
+  - apiVersion: v2
+    appVersion: "2025-07-14"
+    created: "2025-07-14T01:50:36.448057988Z"
+    description: A Helm chart for Kubernetes
+    digest: 06ab3bb3e13be4d227f3ccfae0f01c7b26db97a85164eb35b6f5a42817c944ad
+    name: uptime-kuma
+    type: application
+    urls:
+    - https://jpcortesp.github.io/jp-helm-repos/uptime-kuma-0.1.0.tgz
+    version: 0.1.0
+generated: "2025-07-14T01:50:36.445979251Z"
